@@ -1,0 +1,6 @@
+[submodule "ambweb"]
+	path = ambweb
+	url = https://github.com/vmindru/ambweb
+[submodule "ambp3client"]
+	path = ambp3client
+	url = https://github.com/vmindru/ambp3client
