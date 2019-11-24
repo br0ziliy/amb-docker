@@ -4,25 +4,24 @@ services:
     build: ./ambweb
     command: python /code/manage.py runserver
     ports:
-      - "8000:8000"
+      - "8008:8000"
     depends_on:
       - db
     volumes:
       - ./ambweb:/code
   amb_client:
     build: ./ambp3client
-    command: python /code/amb_client.py -f /code/local_conf.yaml 
+    command: python /code/amb_client.py -f /code/local_conf.yaml
     depends_on:
       - db
     volumes:
-      - ./ambp3clilent:/code
+      - ./ambp3client:/code
   amb_laps:
     build: ./ambp3client
-    command: python /code/amb_laps.py -f /code/local_conf.yaml 
+    command: python /code/amb_laps.py -f /code/local_conf.yaml
     depends_on:
       - db
     volumes:
-      - ./ambp3clilent:/code
+      - ./ambp3client:/code
   db:
     image: "mariadb:10.4"
-  
