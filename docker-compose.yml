@@ -2,26 +2,39 @@ version: '3'
 services:
   ambweb:
     build: ./ambweb
-    command: python /code/manage.py runserver
+    command: /code/manage.py runserver 0.0.0.0:8000
     ports:
-      - "8008:8000"
+      - "${AMBWEB_PORT:-8000}:8000"
     depends_on:
       - db
     volumes:
       - ./ambweb:/code
   amb_client:
     build: ./ambp3client
-    command: python /code/amb_client.py -f /code/local_conf.yaml
+    command: python /code/amb_client.py -f /code/${AMB_LOCAL_CONF:-local_conf.yaml}
     depends_on:
       - db
     volumes:
       - ./ambp3client:/code
   amb_laps:
     build: ./ambp3client
-    command: python /code/amb_laps.py -f /code/local_conf.yaml
+    command: python /code/amb_laps.py -f /code/${AMB_LOCAL_CONF:-local_conf.yaml}
     depends_on:
       - db
     volumes:
       - ./ambp3client:/code
   db:
     image: "mariadb:10.4"
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD:-test}'
+    volumes:
+      - ./mysql-datadir:/var/lib/mysql
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+  amb_test_server:
+    build: ./ambp3client
+    command: python /code/test_server/test_server.py ${AMB_TEST_SERVER_FILE:-/code/test_server/out.log} -l ${AMB_TEST_SERVER:-0.0.0.0} -p ${AMB_TEST_SERVER_PORT:-12001}
+    volumes:
+      - ./ambp3client:/code
